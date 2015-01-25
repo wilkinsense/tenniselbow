@@ -22,6 +22,9 @@
     <ClCompile Include="src\Ball.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="src\Net.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -33,12 +36,21 @@
     <ClInclude Include="src\Ball.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="src\Net.h">
+      <Filter>Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\me.png">
       <Filter>Resources</Filter>
     </Image>
     <Image Include="res\ball.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="res\court.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="res\net.png">
       <Filter>Resources</Filter>
     </Image>
   </ItemGroup>

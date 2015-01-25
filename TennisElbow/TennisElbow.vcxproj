@@ -82,16 +82,20 @@
     <ClCompile Include="src\Ball.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Net.cpp" />
     <ClCompile Include="src\Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Ball.h" />
     <ClInclude Include="src\Game.h" />
+    <ClInclude Include="src\Net.h" />
     <ClInclude Include="src\Player.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\ball.png" />
+    <Image Include="res\court.png" />
     <Image Include="res\me.png" />
+    <Image Include="res\net.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

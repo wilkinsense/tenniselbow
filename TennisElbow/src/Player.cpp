@@ -5,7 +5,6 @@
 
 Player::Player() : GameObject()
 {
-  _transform.position = { 10.0f, 10.0f, 0.0f };
   _speed = 50.0f;
 }
 
@@ -31,6 +30,16 @@ void Player::Update(float dt)
     float xvalue = (float)SDL_GameControllerGetAxis(_controller, SDL_CONTROLLER_AXIS_LEFTX) / (float)SHRT_MAX;
     float yvalue = (float)SDL_GameControllerGetAxis(_controller, SDL_CONTROLLER_AXIS_LEFTY) / (float)SHRT_MAX;
 
+    if (abs(xvalue) < 0.01f)
+    {
+      xvalue = 0.0f;
+    }
+
+    if (abs(yvalue) < 0.01f)
+    {
+      yvalue = 0.0f;
+    }
+
     _transform.position.x += xvalue * _speed * dt;
     _transform.position.y += yvalue * _speed * dt;
   }
@@ -44,6 +53,6 @@ void Player::Draw(SDL_Renderer *renderer, float dt)
     _transform.position.x + 10,
     _transform.position.y + 10);
   
-  SDL_Rect location = { _transform.position.x, _transform.position.y, 16, 16 };
+  SDL_Rect location = { _transform.position.x - 8, _transform.position.y - 8, 16, 16 };
   SDL_RenderCopy(renderer, _playerImage, nullptr, &location);
 }
