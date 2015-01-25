@@ -9,12 +9,13 @@ Net::Net() : GameObject()
 
 Net::~Net()
 {
-
+  SDL_DestroyTexture(_netImage);
 }
 
 void Net::Initialize(SDL_Renderer *renderer)
 {
   _netImage = IMG_LoadTexture(renderer, "res/net.png");
+  SDL_QueryTexture(_netImage, nullptr, nullptr, &_width, &_height);
 }
 
 void Net::Update(float dt)
@@ -24,9 +25,12 @@ void Net::Update(float dt)
 
 void Net::Draw(SDL_Renderer *renderer, float dt)
 {
-  int width, height;
-  SDL_QueryTexture(_netImage, nullptr, nullptr, &width, &height);
-
-  SDL_Rect netRect = { _transform.position.x - (width / 2), _transform.position.y - (height / 2), width, height };
+  SDL_Rect netRect;
+  GetDrawRect(&netRect);
   SDL_RenderCopy(renderer, _netImage, nullptr, &netRect);
+}
+
+void Net::GetDrawRect(SDL_Rect *drawRect)
+{
+  (*drawRect) = { _transform.position.x - (_width / 2), _transform.position.y - (_height / 2), _width, _height };
 }

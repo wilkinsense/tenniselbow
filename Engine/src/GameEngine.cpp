@@ -16,7 +16,7 @@ void GameEngine::Initialize()
 {
   SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER);
 
-  _window = SDL_CreateWindow("CST8237 Lab",
+  _window = SDL_CreateWindow("Engine",
     SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
     640, 640,
     SDL_WINDOW_SHOWN);

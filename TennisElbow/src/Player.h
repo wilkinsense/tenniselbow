@@ -17,6 +17,8 @@ public:
   void Update(float dt);
   void Draw(SDL_Renderer *renderer, float dt);
 
+  void SetController(SDL_GameController *controller);
+
 protected:
   SDL_Texture *_playerImage;
 
