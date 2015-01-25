@@ -36,4 +36,5 @@ protected:
   float speed;
   float rotationSpeed;
   bool _ballInPlay;
+  bool _hitNet;
 };

@@ -25,6 +25,8 @@ void Ball::Initialize(SDL_Renderer *renderer)
 {
   _ballImage = IMG_LoadTexture(renderer, "res/ball.png");
   _shadowImage = IMG_LoadTexture(renderer, "res/shadow.png");
+
+  SDL_QueryTexture(_ballImage, nullptr, nullptr, &_width, &_height);
 }
 
 void Ball::Update(float dt)
@@ -79,10 +81,11 @@ void Ball::Update(float dt)
 
 void Ball::Draw(SDL_Renderer *renderer, float dt)
 { 
-  SDL_Rect location = { _transform.position.x, _transform.position.y, 4, 4 };
+  SDL_Rect location;
+  GetShadowDrawRect(&location);
   SDL_RenderCopy(renderer, _shadowImage, nullptr, &location);
 
-  location = { _transform.position.x, _transform.position.y - (_transform.position.z * 15.0f), 4, 4 };
+  GetDrawRect(&location);
   SDL_RenderCopy(renderer, _ballImage, nullptr, &location);
 }
 
@@ -96,6 +99,16 @@ void Ball::ApplyForce(Vector3 force)
   {
     _onGround = false;
   }
+}
+
+void Ball::GetShadowDrawRect(SDL_Rect *shadowDrawRect)
+{
+  (*shadowDrawRect) = { _transform.position.x - (_width / 2), _transform.position.y - (_height / 2), _width, _height };
+}
+
+void Ball::GetDrawRect(SDL_Rect *drawRect)
+{
+  (*drawRect) = { _transform.position.x - (_width / 2), _transform.position.y - (_transform.position.z * 15.0f) - (_height / 2), _width, _height };
 }
 
 const Vector3& Ball::GetVelocity()

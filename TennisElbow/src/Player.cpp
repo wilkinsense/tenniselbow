@@ -47,12 +47,9 @@ void Player::Update(float dt)
 
 void Player::Draw(SDL_Renderer *renderer, float dt)
 {
-  SDL_RenderDrawLine(renderer,
-    _transform.position.x,
-    _transform.position.y,
-    _transform.position.x + 10,
-    _transform.position.y + 10);
-  
-  SDL_Rect location = { _transform.position.x - 8, _transform.position.y - 8, 16, 16 };
+  int width, height;
+  SDL_QueryTexture(_playerImage, nullptr, nullptr, &width, &height);
+
+  SDL_Rect location = { _transform.position.x - (width / 2), _transform.position.y - (height / 2), width, height };
   SDL_RenderCopy(renderer, _playerImage, nullptr, &location);
 }

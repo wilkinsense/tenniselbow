@@ -60,23 +60,46 @@ void Game::UpdateImpl(float dt)
     {
       if (evt.cbutton.button == SDL_CONTROLLER_BUTTON_A)
       {
+        Vector3 difference = { 0.0f, 0.0f, 0.0f };
         if (_ball.IsOnGround())
         {
-          Vector3 difference = { 0.0f,//_ball.GetTransform().position.x - _player.GetTransform().position.x,
-            0.0f,//_ball.GetTransform().position.y - _player.GetTransform().position.y,
-            5.0f };
-          _ball.ApplyForce(difference);
+          difference = { 0.0f, 0.0f, 5.0f };
         }
         else
         {
           _ballInPlay = true;
           _ball.SetActive(true);
-          Vector3 difference = { 0.0f,
-            -50.0f,
-            8.5f };
-          _ball.ApplyForce(difference);
+          difference = { 0.0f, -50.0f, 8.5f };
         }
+        _ball.ApplyForce(difference);
       }
+    }
+  }
+  else if (_hitNet == false)
+  {
+    SDL_Rect ballRect, shadowRect;
+    _ball.GetDrawRect(&ballRect);
+    _ball.GetShadowDrawRect(&shadowRect);
+
+    int netWidth = 136, netHeight = 11;
+    SDL_Rect netRect = { _net.GetTransform().position.x - (netWidth / 2), _net.GetTransform().position.y - (netHeight / 2), netWidth, netHeight };
+
+    bool firstIntersect = SDL_HasIntersection(&ballRect, &netRect);
+    bool secondIntersect = SDL_HasIntersection(&shadowRect, &netRect);
+    float difference = _net.GetTransform().position.y - (_ball.GetTransform().position.y + _ball.GetTransform().position.z);
+    bool depthTest = difference < -4.0f;
+
+    if (firstIntersect && secondIntersect && depthTest)
+    {
+      Vector3 velocity = _ball.GetVelocity();
+      velocity.x *= -1.25f;
+      velocity.y *= -1.25f;
+      velocity.z = 0.0f;
+
+      printf("Depth test: %f\n", difference);
+
+      _ball.ApplyForce(velocity);
+      _hitNet = true;
     }
   }
 
@@ -96,24 +119,7 @@ void Game::DrawImpl(SDL_Renderer *renderer, float dt)
   // Set the draw colour for our point.
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 
-  // Draw the point.
-  //SDL_RenderDrawPoint(renderer, posX, posY);
-
-  static float rotationDegrees = 10.0f;
-  rotationDegrees += (rotationSpeed * dt);
-  rotationDegrees += (rotationDegrees >= 360.0f ? -360.0f : 0);
-
-  float rotationRadians = MathUtils::ToRadians(rotationDegrees);
-
-  Vector2 rotatedOffset =
-  {
-    endPointOffset.x * cosf(rotationRadians) + endPointOffset.y * sinf(rotationRadians),
-    endPointOffset.x * sinf(rotationRadians) - endPointOffset.y * cosf(rotationRadians)
-  };
-
-  Vector2 transformedEndPoint = { pos.x + rotatedOffset.x, pos.y + rotatedOffset.y };
-
-  SDL_Rect courtRect = { 0.0f, 0.0f, 154.0f, 138.0f };
+  SDL_Rect courtRect = { 0.0f, 0.0f };
   SDL_QueryTexture(_court, nullptr, nullptr, &courtRect.w, &courtRect.h);
 
   SDL_RenderCopy(_renderer, _court, NULL, &courtRect);
@@ -125,12 +131,11 @@ void Game::DrawImpl(SDL_Renderer *renderer, float dt)
   {
     (*itr)->Draw(renderer, dt);
   }
-
-  SDL_RenderDrawLine(renderer, pos.x, pos.y, transformedEndPoint.x, transformedEndPoint.y);
 }
 
 void Game::CalculateDrawOrder(std::vector<GameObject *>& drawOrder)
 {
+  // SUPER HACK GARBAGE ALGO.
   drawOrder.clear();
 
   auto objectsCopy = _objects;
@@ -171,6 +176,7 @@ void Game::Reset()
   rotationSpeed = 360.0f;
 
   _ballInPlay = false;
+  _hitNet = false;
 
   _player.GetTransform().position = { 100.0f, 125.0f, 0.0f };
   _ball.SetActive(false);
