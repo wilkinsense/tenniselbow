@@ -36,7 +36,7 @@ void Game::InitializeImpl()
   _objects.push_back(&_player);
   _objects.push_back(&_ball);
 
-  _controller = SDL_GameControllerOpen(1);
+  _controller = SDL_GameControllerOpen(0);
   _player.SetController(_controller);
 
   _net.GetTransform().position = { 69.0f, 71.0f, 0.0f };
