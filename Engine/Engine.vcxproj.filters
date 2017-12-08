@@ -25,6 +25,12 @@
     <ClCompile Include="src\InputManager.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="src\Screen.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ScreenManager.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GameEngine.h">
@@ -40,6 +46,12 @@
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="src\InputManager.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Screen.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ScreenManager.h">
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>
