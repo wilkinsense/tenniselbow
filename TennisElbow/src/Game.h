@@ -13,11 +13,17 @@ class Game: public GameEngine
 {
   friend class GameEngine;
 
+  enum RoundState
+  {
+    ROUND_STATE_SERVING,
+    ROUND_STATE_PLAY,
+    ROUND_STATE_END,
+  };
+
   enum GameState
   {
-    GAME_STATE_SERVING,
     GAME_STATE_PLAY,
-    GAME_STATE_END_ROUND,
+    GAME_STATE_PAUSED
   };
 
 public:
@@ -43,7 +49,8 @@ protected:
   // Using the default member-wise initializer for our new struct.
   Vector2 _servingDirection;
 
-  GameState _state;
+  RoundState _roundState;
+  GameState _gameState;
 
   SDL_GameController *_controller;
 };

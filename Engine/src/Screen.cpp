@@ -10,7 +10,7 @@ void Screen::Initialize(SDL_Renderer *renderer)
   InitializeImpl(renderer);
 }
 
-Screen::Screen()
+Screen::~Screen()
 {
   SDL_DestroyTexture(_screenRenderTarget);
 }

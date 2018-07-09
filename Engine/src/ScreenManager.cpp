@@ -31,10 +31,10 @@ ScreenManager::ScreenManager()
 
 ScreenManager::~ScreenManager()
 {
-  SDL_DestroyTexture(mDefaultTarget);
+  SDL_DestroyTexture(_defaultTarget);
 
-  SDL_DestroyRenderer(mRenderer);
-  SDL_DestroyWindow(mWindow);
+  SDL_DestroyRenderer(_renderer);
+  SDL_DestroyWindow(_window);
 
   SDL_Quit();
 }

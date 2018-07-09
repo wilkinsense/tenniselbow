@@ -32,5 +32,5 @@ void Net::Draw(SDL_Renderer *renderer, float dt)
 
 void Net::GetDrawRect(SDL_Rect *drawRect)
 {
-  (*drawRect) = { _transform.position.x - (_width / 2), _transform.position.y - (_height / 2), _width, _height };
+  (*drawRect) = { (int)_transform.position.x - (_width / 2), (int)_transform.position.y - (_height / 2), _width, _height };
 }

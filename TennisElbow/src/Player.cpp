@@ -3,6 +3,8 @@
 #include <SDL_image.h>
 #include <iostream>
 
+#define DEADZONE 0.25f
+
 Player::Player() : GameObject()
 {
   _speed = 50.0f;
@@ -24,12 +26,12 @@ void Player::Update(float dt)
   float xvalue = (float)SDL_GameControllerGetAxis(_controller, SDL_CONTROLLER_AXIS_LEFTX) / (float)SHRT_MAX;
   float yvalue = (float)SDL_GameControllerGetAxis(_controller, SDL_CONTROLLER_AXIS_LEFTY) / (float)SHRT_MAX;
 
-  if (abs(xvalue) < 0.25f)
+  if (abs(xvalue) < DEADZONE)
   {
     xvalue = 0.0f;
   }
 
-  if (abs(yvalue) < 0.25f)
+  if (abs(yvalue) < DEADZONE)
   {
     yvalue = 0.0f;
   }

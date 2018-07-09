@@ -25,6 +25,8 @@ public:
   bool IsBouncing();
   const Vector3& GetVelocity();
 
+  void Reset();
+
   void GetDrawRect(SDL_Rect *drawRect);
   void GetShadowDrawRect(SDL_Rect *shadowDrawRect);
 
