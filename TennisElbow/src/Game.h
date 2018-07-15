@@ -52,5 +52,10 @@ protected:
   RoundState _roundState;
   GameState _gameState;
 
+  bool _hitNet;
+
+  Vector3 _hitPosition;
+  Vector3 _hitVelocity;
+
   SDL_GameController *_controller;
 };

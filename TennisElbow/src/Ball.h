@@ -25,6 +25,8 @@ public:
   bool IsBouncing();
   const Vector3& GetVelocity();
 
+  void TEST_SetVelocity(Vector3 velocity);
+
   void Reset();
 
   void GetDrawRect(SDL_Rect *drawRect);
@@ -36,7 +38,6 @@ protected:
 
   Vector3 _velocity;
   float _mass;
-  const float timeScale = 4.0f;
   bool _onGround;
   bool _bouncing;
   bool _active;

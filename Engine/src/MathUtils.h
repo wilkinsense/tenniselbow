@@ -34,4 +34,8 @@ class MathUtils
 public:
   static float ToRadians(float degrees);
   static float ToDegrees(float radians);
+
+  static Vector2 Normalize(Vector2 vector);
+  static Vector3 Normalize(Vector3 vector);
+  static Vector4 Normalize(Vector4 vector);
 };

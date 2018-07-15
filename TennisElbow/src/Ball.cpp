@@ -3,16 +3,14 @@
 #include <SDL_image.h>
 #include <math.h>
 #include <iostream>
-
-#define BOUNCE_VELOCITY_DECAY 0.75f
-#define GROUND_FRICTION 0.0125f
-#define GRAVITY -9.8f
+#include <MathConstants.h>
+#include "GameConstants.h"
 
 Ball::Ball() : GameObject()
 {
   Reset();
 
-  _mass = 0.146f;
+  _mass = BALL_MASS;
 
 }
 
@@ -50,7 +48,7 @@ void Ball::Update(float dt)
 
   if (_onGround == false)
   {
-    _velocity.z += (GRAVITY * dt);
+    _velocity.z += (PHYSICS_GRAVITY * dt);
     _transform.position.z += _velocity.z * dt;
   }
 
@@ -123,7 +121,7 @@ void Ball::GetShadowDrawRect(SDL_Rect *shadowDrawRect)
 
 void Ball::GetDrawRect(SDL_Rect *drawRect)
 {
-  (*drawRect) = { (int)_transform.position.x - (_width / 2), (int)_transform.position.y - (int)(_transform.position.z * 15.0f) - (_height / 2), _width, _height };
+  (*drawRect) = { (int)_transform.position.x - (_width / 2), (int)_transform.position.y - (int)(_transform.position.z * Z_HEIGHT_CORRECTION) - (_height / 2), _width, _height };
 }
 
 const Vector3& Ball::GetVelocity()
@@ -149,4 +147,9 @@ bool Ball::IsOnGround()
 bool Ball::IsBouncing()
 {
   return _bouncing;
+}
+
+void Ball::TEST_SetVelocity(Vector3 velocity)
+{
+  _velocity = velocity;
 }

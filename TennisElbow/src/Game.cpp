@@ -4,6 +4,9 @@
 #include <SDL_image.h>
 #include <SDL_gamecontroller.h>
 
+#include <MathConstants.h>
+#include "GameConstants.h"
+
 // Initializing our static member pointer.
 GameEngine* GameEngine::_instance = nullptr;
 
@@ -15,9 +18,6 @@ GameEngine* GameEngine::CreateInstance()
   }
   return _instance;
 }
-
-#define SERVE_STRENGTH 75.0f
-#define GRAVITY -9.8f
 
 Game::Game() : GameEngine()
 {
@@ -51,6 +51,9 @@ void Game::InitializeImpl()
 
   SDL_RenderSetScale(_renderer, 4, 4);
   Reset();
+
+  _hitPosition = { 105.0f, 130.0f, 0.745036876f };
+  _hitVelocity = { 0.0f, 0.0f, -3.49657798f };
 }
 
 void Game::UpdateImpl(float dt)
@@ -60,9 +63,12 @@ void Game::UpdateImpl(float dt)
 
   HandleInput(&evt);
 
-  for (auto itr = _objects.begin(); itr != _objects.end(); itr++)
+  if (_gameState == GAME_STATE_PLAY)
   {
-    (*itr)->Update(dt);
+    for (auto itr = _objects.begin(); itr != _objects.end(); itr++)
+    {
+      (*itr)->Update(dt);
+    }
   }
 }
 
@@ -71,7 +77,7 @@ void Game::DrawImpl(SDL_Renderer *renderer, float dt)
   // Set the draw colour for our point.
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 
-  SDL_Rect courtRect = { 0.0f, 0.0f };
+  SDL_Rect courtRect = { 0, 0 };
   SDL_QueryTexture(_courtImage, nullptr, nullptr, &courtRect.w, &courtRect.h);
 
   SDL_RenderCopy(_renderer, _courtImage, NULL, &courtRect);
@@ -90,11 +96,21 @@ void Game::DrawImpl(SDL_Renderer *renderer, float dt)
     SDL_GetRenderDrawColor(renderer, &r, &g, &b, &a);
     SDL_SetRenderDrawColor(renderer, 0xFF, 0, 0, SDL_ALPHA_OPAQUE);
 
-    SDL_RenderDrawLine(renderer, _player.GetTransform().position.x, _player.GetTransform().position.y,
-      _player.GetTransform().position.x + _servingDirection.x, _player.GetTransform().position.y + _servingDirection.y);
+    SDL_RenderDrawLine(renderer, (int)(_player.GetTransform().position.x), (int)(_player.GetTransform().position.y),
+      (int)(_player.GetTransform().position.x + _servingDirection.x), (int)(_player.GetTransform().position.y + _servingDirection.y));
 
     SDL_SetRenderDrawColor(renderer, r, g, b, a);
   }
+
+  Uint8 r, g, b, a;
+  SDL_GetRenderDrawColor(renderer, &r, &g, &b, &a);
+  SDL_SetRenderDrawColor(renderer, 0, 0xFF, 0, SDL_ALPHA_OPAQUE);
+
+  SDL_Rect ballRect = { (int)_ball.GetTransform().position.x, (int)(_ball.GetTransform().position.y - (_ball.GetTransform().position.z * 15)) };
+  //SDL_RenderDrawRect(renderer, &ballRect);
+
+  SDL_SetRenderDrawColor(renderer, r, g, b, a);
+
 }
 
 void Game::CalculateDrawOrder(std::vector<GameObject *>& drawOrder)
@@ -137,6 +153,9 @@ void Game::Reset()
   _servingDirection = { 0.0f, 0.0f };
 
   _roundState = ROUND_STATE_SERVING;
+  _gameState = GAME_STATE_PLAY;
+
+  _hitNet = false;
 
   _player.GetTransform().position = { 100.0f, 125.0f, 0.0f };
   _ball.Reset();
@@ -149,30 +168,44 @@ void Game::HandleInput(SDL_Event *evt)
   
   if (_roundState == ROUND_STATE_SERVING)
   {
-    _servingDirection = { (70 - _player.GetTransform().position.x) * 2,
-      (15 - _player.GetTransform().position.y) };
+    _servingDirection = { (SERVING_DIRECTION_OFFSET_X - _player.GetTransform().position.x) * 2,
+      (SERVING_DIRECTION_OFFSET_Y - _player.GetTransform().position.y) };
 
     _ball.GetTransform().position.x = _player.GetTransform().position.x + 5;
     _ball.GetTransform().position.y = _player.GetTransform().position.y + 5;
     if (buttonReleased)
     {
-      if (evt->cbutton.button == SDL_CONTROLLER_BUTTON_A)
+      bool replay = evt->cbutton.button == SDL_CONTROLLER_BUTTON_B;
+      if (replay)
+      {
+        _ball.Reset();
+        _ball.TEST_SetVelocity(_hitVelocity);
+        _ball.GetTransform().position = _hitPosition;
+      }
+
+      if (evt->cbutton.button == SDL_CONTROLLER_BUTTON_A || replay)
       {
         Vector3 difference = { 0.0f, 0.0f, 0.0f };
         if (_ball.IsOnGround())
         {
-          difference = { 0.0f, 0.0f, 5.0f };
+          difference = { 0.0f, 0.0f, BALL_THROW_HEIGHT };
         }
         else
         {
           _roundState = ROUND_STATE_PLAY;
           _ball.SetActive(true);
-          float velocityZ = -GRAVITY * ((_ball.GetVelocity().z < 0.0f) ? 0.75f : 0.33f);
+          float velocityZ = -PHYSICS_GRAVITY * ((_ball.GetVelocity().z < 0.0f) ? 0.75f : 0.33f);
 
           float hyp = sqrtf(powf(_servingDirection.x, 2) + powf(_servingDirection.y, 2));
           float magX = _servingDirection.x / hyp;
           float magY = _servingDirection.y / hyp;
-          difference = { SERVE_STRENGTH * magX, SERVE_STRENGTH * magY, velocityZ };
+          Vector2 normalizedServingDirection = MathUtils::Normalize(_servingDirection);
+          difference = { SERVE_STRENGTH * normalizedServingDirection.x, 
+                         SERVE_STRENGTH * normalizedServingDirection.y, 
+                         velocityZ };
+
+          _hitPosition = _ball.GetTransform().position;
+          _hitVelocity = _ball.GetVelocity();
         }
         _ball.ApplyForce(difference);
       }
@@ -187,22 +220,43 @@ void Game::HandleInput(SDL_Event *evt)
     SDL_Rect netRect;
     _net.GetDrawRect(&netRect);
 
-    bool firstIntersect = SDL_HasIntersection(&ballRect, &netRect);
-    bool secondIntersect = SDL_HasIntersection(&shadowRect, &netRect);
-    float difference = (_net.GetTransform().position.y + (netRect.h / 2.0f)) - (_ball.GetTransform().position.y + _ball.GetTransform().position.z);
-    bool depthTest = difference < 0.0f && difference > -2.6f;
+    Vector3 velocity = _ball.GetVelocity();
+    Vector3 normalizedVelocity = { velocity.x, velocity.y, velocity.z * 15.0f };
+    normalizedVelocity = MathUtils::Normalize(normalizedVelocity);
 
-    if (firstIntersect && secondIntersect && depthTest)
+    bool ballIntersection = SDL_HasIntersection(&ballRect, &netRect);
+    bool shadowIntersection = SDL_HasIntersection(&shadowRect, &netRect);
+    float difference = (_net.GetTransform().position.y + (netRect.h / 2.0f)) - (_ball.GetTransform().position.y - (_ball.GetTransform().position.z * 15));
+    float correctedDifference = difference + normalizedVelocity.z;
+    
+    bool hitNetTest = correctedDifference <= 8.5f;
+    bool letTest = correctedDifference < 10.0f;
+
+    if (ballIntersection && shadowIntersection && !_hitNet)
     {
-      Vector3 velocity = _ball.GetVelocity();
-      velocity.x *= -1.25f;
-      velocity.y *= -1.25f;
-      velocity.z = 0.0f;
+      _hitNet = true;
 
-      //printf("Depth test: %f\n", difference);
+      if (hitNetTest)
+      { 
+        velocity.x *= -1.25f;
+        velocity.y *= -1.25f;
+        velocity.z = 0.0f;
 
-      _ball.ApplyForce(velocity);
-      _roundState = ROUND_STATE_END;
+        printf("Net test: %f, Z: %f\n", difference, normalizedVelocity.z);
+        _roundState = ROUND_STATE_END;
+
+        _ball.ApplyForce(velocity);
+        //_gameState = GAME_STATE_PAUSED;
+      }
+      else if(letTest)
+      {
+        velocity.x *= -0.45;
+        velocity.y *= -0.45f;
+        velocity.z *= -1.10f;
+        printf("Let test: %f, Z: %f\n", difference, normalizedVelocity.z);
+
+        _ball.ApplyForce(velocity);
+      }
     }
   }
 

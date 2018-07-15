@@ -89,6 +89,7 @@
   <ItemGroup>
     <ClInclude Include="src\Ball.h" />
     <ClInclude Include="src\Game.h" />
+    <ClInclude Include="src\GameConstants.h" />
     <ClInclude Include="src\Net.h" />
     <ClInclude Include="src\Player.h" />
   </ItemGroup>
