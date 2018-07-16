@@ -8,6 +8,12 @@
     <Filter Include="Resources">
       <UniqueIdentifier>{d684dc75-f33a-4c67-bace-3986c6e64a74}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Screens">
+      <UniqueIdentifier>{cb8ef51b-0a33-4f1b-a50b-643550e4fba8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Objects">
+      <UniqueIdentifier>{07f522a2-37f4-460e-9bd7-33a694619aa9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game.cpp">
@@ -16,37 +22,37 @@
     <ClCompile Include="src\main.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Player.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="src\Ball.cpp">
-      <Filter>Source</Filter>
+      <Filter>Source\Objects</Filter>
     </ClCompile>
     <ClCompile Include="src\Net.cpp">
-      <Filter>Source</Filter>
+      <Filter>Source\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Player.cpp">
+      <Filter>Source\Objects</Filter>
     </ClCompile>
     <ClCompile Include="src\TennisScreen.cpp">
-      <Filter>Source</Filter>
+      <Filter>Source\Screens</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="src\Player.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Ball.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Net.h">
-      <Filter>Source</Filter>
-    </ClInclude>
     <ClInclude Include="src\GameConstants.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="src\Ball.h">
+      <Filter>Source\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Net.h">
+      <Filter>Source\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Player.h">
+      <Filter>Source\Objects</Filter>
+    </ClInclude>
     <ClInclude Include="src\TennisScreen.h">
-      <Filter>Source</Filter>
+      <Filter>Source\Screens</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

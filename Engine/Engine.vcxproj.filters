@@ -5,6 +5,18 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Source\Subsystems">
+      <UniqueIdentifier>{4136a46d-3f83-436f-a9fd-b0c355290252}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Utilities">
+      <UniqueIdentifier>{122091ad-1938-41ea-94af-2955fcf9b787}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Subsystems\Input">
+      <UniqueIdentifier>{3796687c-9468-4652-9549-14a58d139f0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Subsystems\Screens">
+      <UniqueIdentifier>{71d226ed-d9c8-4b3f-9d57-b90a25c64b24}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -17,19 +29,19 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\MathUtils.cpp">
-      <Filter>Source</Filter>
+      <Filter>Source\Utilities</Filter>
     </ClCompile>
     <ClCompile Include="src\Timer.cpp">
-      <Filter>Source</Filter>
+      <Filter>Source\Utilities</Filter>
     </ClCompile>
     <ClCompile Include="src\InputManager.cpp">
-      <Filter>Source</Filter>
+      <Filter>Source\Subsystems\Input</Filter>
     </ClCompile>
     <ClCompile Include="src\Screen.cpp">
-      <Filter>Source</Filter>
+      <Filter>Source\Subsystems\Screens</Filter>
     </ClCompile>
     <ClCompile Include="src\ScreenManager.cpp">
-      <Filter>Source</Filter>
+      <Filter>Source\Subsystems\Screens</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -39,23 +51,23 @@
     <ClInclude Include="src\GameObject.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="src\MathConstants.h">
+      <Filter>Source\Utilities</Filter>
+    </ClInclude>
     <ClInclude Include="src\MathUtils.h">
-      <Filter>Source</Filter>
+      <Filter>Source\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="src\Timer.h">
-      <Filter>Source</Filter>
+      <Filter>Source\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="src\InputManager.h">
-      <Filter>Source</Filter>
+      <Filter>Source\Subsystems\Input</Filter>
     </ClInclude>
     <ClInclude Include="src\Screen.h">
-      <Filter>Source</Filter>
+      <Filter>Source\Subsystems\Screens</Filter>
     </ClInclude>
     <ClInclude Include="src\ScreenManager.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="src\MathConstants.h">
-      <Filter>Source</Filter>
+      <Filter>Source\Subsystems\Screens</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
