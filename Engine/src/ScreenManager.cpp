@@ -31,12 +31,19 @@ ScreenManager::ScreenManager()
 
 ScreenManager::~ScreenManager()
 {
-  SDL_DestroyTexture(_defaultTarget);
+  /*SDL_DestroyTexture(_defaultTarget);
 
   SDL_DestroyRenderer(_renderer);
   SDL_DestroyWindow(_window);
 
   SDL_Quit();
+  */
+}
+
+void ScreenManager::Setup(SDL_Window *window, SDL_Renderer *renderer)
+{
+  _window = window;
+  _renderer = renderer;
 }
 
 bool ScreenManager::ShowScreen(std::string id)
@@ -94,7 +101,7 @@ bool ScreenManager::PopScreen(std::string id)
   return success;
 }
 
-void ScreenManager::Update()
+void ScreenManager::Update(float dt)
 {
   if (_isRunning)
   {
@@ -103,7 +110,7 @@ void ScreenManager::Update()
 
     if (_activeScreen)
     {
-      _activeScreen->Update(e, 0.0f);
+      _activeScreen->Update(e, dt);
     }
 
     if (e.type == SDL_QUIT)
@@ -113,15 +120,21 @@ void ScreenManager::Update()
   }
 }
 
-void ScreenManager::Draw()
+void ScreenManager::Draw(float dt)
 {
   if (_activeScreen)
   {
-    _activeScreen->Draw(_renderer);
+    //SDL_Texture *oldTarget = SDL_GetRenderTarget(_renderer);
+    //SDL_SetRenderTarget(_renderer, _activeScreen->_screenRenderTarget);
+
+    _activeScreen->Draw(_renderer, dt);
+
+    //SDL_SetRenderTarget(_renderer, oldTarget);
+    //SDL_RenderCopy(_renderer, _activeScreen->_screenRenderTarget, NULL, NULL);
   }
 
-  SDL_RenderPresent(_renderer);
-  SDL_UpdateWindowSurface(_window);
+  //SDL_RenderPresent(_renderer);
+  //SDL_UpdateWindowSurface(_window);
 }
 
 bool ScreenManager::IsRunning()
@@ -136,8 +149,8 @@ void ScreenManager::SetIsRunning(bool running)
 
 void ScreenManager::ClearRenderer()
 {
-  SDL_SetRenderDrawColor(_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-  SDL_RenderClear(_renderer);
+  //SDL_SetRenderDrawColor(_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+  //SDL_RenderClear(_renderer);
 
   if (_activeScreen != nullptr)
   {

@@ -25,6 +25,9 @@
     <ClCompile Include="src\Net.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="src\TennisScreen.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -40,6 +43,9 @@
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="src\GameConstants.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TennisScreen.h">
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>

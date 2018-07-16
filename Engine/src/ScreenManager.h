@@ -15,12 +15,14 @@ public:
 
   ~ScreenManager();
 
+  void Setup(SDL_Window *window, SDL_Renderer *renderer);
+
   bool ShowScreen(std::string id);
   bool PushScreen(std::string id, Screen *screen);
   bool PopScreen(std::string id);
 
-  void Update();
-  void Draw();
+  void Update(float dt);
+  void Draw(float dt);
 
   bool IsRunning();
   void SetIsRunning(bool running);

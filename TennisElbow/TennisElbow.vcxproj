@@ -85,6 +85,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Net.cpp" />
     <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\TennisScreen.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Ball.h" />
@@ -92,6 +93,7 @@
     <ClInclude Include="src\GameConstants.h" />
     <ClInclude Include="src\Net.h" />
     <ClInclude Include="src\Player.h" />
+    <ClInclude Include="src\TennisScreen.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\ball.png" />
