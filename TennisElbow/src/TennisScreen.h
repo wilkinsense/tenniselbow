@@ -4,6 +4,7 @@
 #include <vector>
 #include <SDL_gamecontroller.h>
 
+#include "Opponent.h"
 #include "Player.h"
 #include "Ball.h"
 #include "Net.h"
@@ -44,6 +45,7 @@ protected:
   void Reset();
   void CalculateDrawOrder(std::vector<GameObject *>& drawOrder);
 
+  Opponent _opponent;
   Player _player;
   Ball _ball;
   Net _net;

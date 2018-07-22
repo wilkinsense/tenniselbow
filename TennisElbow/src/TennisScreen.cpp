@@ -19,8 +19,9 @@ void TennisScreen::InitializeImpl(SDL_Renderer *renderer)
   _courtImage = IMG_LoadTexture(renderer, "res/court.png");
 
   _objects.push_back(&_net);
-  _objects.push_back(&_player);
   _objects.push_back(&_ball);
+  _objects.push_back(&_player);
+  _objects.push_back(&_opponent);
 
   _player.SetController(_controller);
 
@@ -34,6 +35,7 @@ void TennisScreen::InitializeImpl(SDL_Renderer *renderer)
   SDL_RenderSetScale(renderer, 4, 4);
   Reset();
 
+  // Let Replay serve values
   _hitPosition = { 105.0f, 130.0f, 0.745036876f };
   _hitVelocity = { 0.0f, 0.0f, -3.49657798f };
 }
@@ -49,7 +51,10 @@ void TennisScreen::Reset()
   _hitNet = false;
 
   _player.GetTransform().position = { 100.0f, 125.0f, 0.0f };
+  _opponent.GetTransform().position = { 30.0f, 15.0f, 0.0f };
+
   _ball.Reset();
+  _opponent.Reset();
 }
 
 void TennisScreen::Update(const SDL_Event &e, float dt) {
@@ -61,6 +66,11 @@ void TennisScreen::Update(const SDL_Event &e, float dt) {
     {
       (*itr)->Update(dt);
     }
+  }
+
+  if (_ball.IsBouncing())
+  {
+    _opponent.CalculateBallImpact(&_ball);
   }
 }
 
@@ -74,8 +84,8 @@ void TennisScreen::HandleInput(const SDL_Event *evt)
     _servingDirection = { (SERVING_DIRECTION_OFFSET_X - _player.GetTransform().position.x) * 2,
       (SERVING_DIRECTION_OFFSET_Y - _player.GetTransform().position.y) };
 
-    _ball.GetTransform().position.x = _player.GetTransform().position.x + 5;
-    _ball.GetTransform().position.y = _player.GetTransform().position.y + 5;
+    _ball.GetTransform().position.x = _player.GetTransform().position.x + BALL_SERVING_OFFSET_X;
+    _ball.GetTransform().position.y = _player.GetTransform().position.y + BALL_SERVING_OFFSET_Y;
     if (buttonReleased)
     {
       bool replay = evt->cbutton.button == SDL_CONTROLLER_BUTTON_B;
@@ -111,6 +121,11 @@ void TennisScreen::HandleInput(const SDL_Event *evt)
           _hitVelocity = _ball.GetVelocity();
         }
         _ball.ApplyForce(difference);
+
+        if (_roundState == ROUND_STATE_PLAY)
+        {
+          _opponent.CalculateBallImpact(&_ball);
+        }
       }
     }
   }
@@ -149,7 +164,6 @@ void TennisScreen::HandleInput(const SDL_Event *evt)
         _roundState = ROUND_STATE_END;
 
         _ball.ApplyForce(velocity);
-        //_gameState = GAME_STATE_PAUSED;
       }
       else if (letTest)
       {
@@ -160,6 +174,14 @@ void TennisScreen::HandleInput(const SDL_Event *evt)
 
         _ball.ApplyForce(velocity);
       }
+    }
+
+    if (fabsf(_ball.GetVelocity().x) <= BALL_STOPPED_EPSILON &&
+      fabsf(_ball.GetVelocity().y) <= BALL_STOPPED_EPSILON &&
+      fabsf(_ball.GetVelocity().z) <= BALL_STOPPED_EPSILON &&
+      _ball.IsOnGround() == true) 
+    {
+      _roundState = ROUND_STATE_END;
     }
   }
 
