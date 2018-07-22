@@ -34,6 +34,9 @@
     <ClCompile Include="src\TennisScreen.cpp">
       <Filter>Source\Screens</Filter>
     </ClCompile>
+    <ClCompile Include="src\Opponent.cpp">
+      <Filter>Source\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -53,6 +56,9 @@
     </ClInclude>
     <ClInclude Include="src\TennisScreen.h">
       <Filter>Source\Screens</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Opponent.h">
+      <Filter>Source\Objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

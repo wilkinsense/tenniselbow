@@ -82,6 +82,7 @@
   <ItemGroup>
     <ClCompile Include="src\Ball.cpp" />
     <ClCompile Include="src\Game.cpp" />
+    <ClCompile Include="src\Opponent.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Net.cpp" />
     <ClCompile Include="src\Player.cpp" />
@@ -91,6 +92,7 @@
     <ClInclude Include="src\Ball.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\GameConstants.h" />
+    <ClInclude Include="src\Opponent.h" />
     <ClInclude Include="src\Net.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\TennisScreen.h" />

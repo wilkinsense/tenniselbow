@@ -5,6 +5,12 @@ struct Vector2
 {
   float x;
   float y;
+
+  static const Vector2 Zero;
+  Vector2 operator+(const Vector2& rhs);
+  Vector2 operator-(const Vector2& rhs);
+  Vector2 operator*(const float& rhs);
+  Vector2 operator/(const float& rhs);
 };
 
 struct Vector3
@@ -12,6 +18,12 @@ struct Vector3
   float x;
   float y;
   float z;
+
+  static const Vector3 Zero;
+  Vector3 operator+(const Vector3& rhs);
+  Vector3 operator-(const Vector3& rhs);
+  Vector3 operator*(const float& rhs);
+  Vector3 operator/(const float& rhs);
 };
 
 struct Vector4
@@ -20,6 +32,12 @@ struct Vector4
   float y;
   float z;
   float w;
+
+  static const Vector4 Zero;
+  Vector4 operator+(const Vector4& rhs);
+  Vector4 operator-(const Vector4& rhs);
+  Vector4 operator*(const float& rhs);
+  Vector4 operator/(const float& rhs);
 };
 
 struct Transform
@@ -35,7 +53,12 @@ public:
   static float ToRadians(float degrees);
   static float ToDegrees(float radians);
 
-  static Vector2 Normalize(Vector2 vector);
-  static Vector3 Normalize(Vector3 vector);
-  static Vector4 Normalize(Vector4 vector);
+  template<typename Vector>
+  static Vector Normalize(Vector vector) {
+    return vector / Magnitude(vector);
+  }
+
+  static float Magnitude(Vector2 vector);
+  static float Magnitude(Vector3 vector);
+  static float Magnitude(Vector4 vector);
 };

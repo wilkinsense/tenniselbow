@@ -6,7 +6,7 @@
 
 Player::Player() : GameObject()
 {
-  _speed = SPEED_PLAYER;
+  _speed = PLAYER_SPEED;
 }
 
 Player::~Player()
@@ -44,7 +44,7 @@ void Player::Draw(SDL_Renderer *renderer, float dt)
   int width, height;
   SDL_QueryTexture(_playerImage, nullptr, nullptr, &width, &height);
 
-  SDL_Rect location = { _transform.position.x - (width / 2), _transform.position.y - (height / 2), width, height };
+  SDL_Rect location = { (int)_transform.position.x - (width / 2), (int)_transform.position.y - (height / 2), width, height };
   SDL_RenderCopy(renderer, _playerImage, nullptr, &location);
 }
 
