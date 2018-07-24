@@ -2,7 +2,8 @@
 
 // 
 #define NET_HEIGHT_THRESHOLD 8.5f
-#define LET_ZONE_THRESHOLD 0.0f
+#define LET_ZONE_THRESHOLD 10.0f
+#define ACCURACY_CORRECTION 0.97f
 
 // Physics
 #define BALL_MASS 0.146f
@@ -13,6 +14,10 @@
 #define BOUNCE_VELOCITY_DECAY 0.75f
 #define GROUND_FRICTION 0.0125f
 #define SERVE_STRENGTH 75.0f
+
+#define NET_HIT_BOUNCE_DECAY -1.25f
+#define LET_HIT_BOUNCE_DECAY_XY -0.45f;
+#define LET_HIT_BOUNCE_DECAY_Z -1.10f;
 
 // Visual Placement
 #define Z_HEIGHT_CORRECTION 15.0f

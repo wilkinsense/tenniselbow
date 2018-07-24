@@ -36,8 +36,11 @@ void TennisScreen::InitializeImpl(SDL_Renderer *renderer)
   Reset();
 
   // Let Replay serve values
-  _hitPosition = { 105.0f, 130.0f, 0.745036876f };
-  _hitVelocity = { 0.0f, 0.0f, -3.49657798f };
+  /*_hitPosition = { 105.0f, 130.0f, 0.745036876f };
+  _hitVelocity = { 0.0f, 0.0f, -3.49657798f };*/
+
+  _hitPosition = { 105.0f, 130.0f, 1.27140641f };
+  _hitVelocity = { 0.0f, 0.0f, 0.0608121306f };
 }
 
 void TennisScreen::Reset()
@@ -49,16 +52,27 @@ void TennisScreen::Reset()
   _gameState = GAME_STATE_PLAY;
 
   _hitNet = false;
+  _bounces = 0;
 
+  // Default positions for player and opponent; this will have to change once rounds are implemented.
   _player.GetTransform().position = { 100.0f, 125.0f, 0.0f };
   _opponent.GetTransform().position = { 30.0f, 15.0f, 0.0f };
 
   _ball.Reset();
   _opponent.Reset();
+  _impactPoints.clear();
 }
 
 void TennisScreen::Update(const SDL_Event &e, float dt) {
   HandleInput(&e);
+
+  float timescale = 1.0f;
+  dt *= timescale;
+
+  if (dt > 0.33f)
+  {
+    dt = 0.33f;
+  }
 
   if (_gameState == GAME_STATE_PLAY)
   {
@@ -66,11 +80,26 @@ void TennisScreen::Update(const SDL_Event &e, float dt) {
     {
       (*itr)->Update(dt);
     }
-  }
 
-  if (_ball.IsBouncing())
-  {
-    _opponent.CalculateBallImpact(&_ball);
+    if (_ball.IsBouncing())
+    {
+      _impactPoints.push_back(_ball.GetTransform().position);
+    }
+
+    if (_roundState == ROUND_STATE_PLAY)
+    {
+      if (_ball.IsBouncing())
+      {
+        _bounces++;
+        _opponent.CalculateBallImpact(&_ball);
+      }
+
+      if (IsRoundOver())
+      {
+        _roundState = ROUND_STATE_END;
+        _opponent.Reset();
+      }
+    }
   }
 }
 
@@ -147,41 +176,31 @@ void TennisScreen::HandleInput(const SDL_Event *evt)
     float difference = (_net.GetTransform().position.y + (netRect.h / 2.0f)) - (_ball.GetTransform().position.y - (_ball.GetTransform().position.z * 15));
     float correctedDifference = difference + normalizedVelocity.z;
 
-    bool hitNetTest = correctedDifference <= 8.5f;
-    bool letTest = correctedDifference < 10.0f;
+    bool hitNetTest = correctedDifference <= NET_HEIGHT_THRESHOLD;
+    bool letTest = correctedDifference < LET_ZONE_THRESHOLD;
 
     if (ballIntersection && shadowIntersection && !_hitNet)
     {
-      _hitNet = true;
+      _hitNet = hitNetTest || letTest;
 
       if (hitNetTest)
       {
-        velocity.x *= -1.25f;
-        velocity.y *= -1.25f;
+        velocity.x *= NET_HIT_BOUNCE_DECAY;
+        velocity.y *= NET_HIT_BOUNCE_DECAY;
         velocity.z = 0.0f;
-
-        printf("Net test: %f, Z: %f\n", difference, normalizedVelocity.z);
-        _roundState = ROUND_STATE_END;
+        //_roundState = ROUND_STATE_END;
 
         _ball.ApplyForce(velocity);
       }
       else if (letTest)
       {
-        velocity.x *= -0.45f;
-        velocity.y *= -0.45f;
-        velocity.z *= -1.10f;
-        printf("Let test: %f, Z: %f\n", difference, normalizedVelocity.z);
+        velocity.x *= LET_HIT_BOUNCE_DECAY_XY;
+        velocity.y *= LET_HIT_BOUNCE_DECAY_XY;
+        velocity.z *= LET_HIT_BOUNCE_DECAY_Z;
 
         _ball.ApplyForce(velocity);
+        _impactPoints.push_back(_ball.GetTransform().position);
       }
-    }
-
-    if (fabsf(_ball.GetVelocity().x) <= BALL_STOPPED_EPSILON &&
-      fabsf(_ball.GetVelocity().y) <= BALL_STOPPED_EPSILON &&
-      fabsf(_ball.GetVelocity().z) <= BALL_STOPPED_EPSILON &&
-      _ball.IsOnGround() == true) 
-    {
-      _roundState = ROUND_STATE_END;
     }
   }
 
@@ -220,15 +239,21 @@ void TennisScreen::Draw(SDL_Renderer *renderer, float dt)
 
     SDL_SetRenderDrawColor(renderer, r, g, b, a);
   }
+  else if (!_impactPoints.empty())
+  {
+    Uint8 r, g, b, a;
+    SDL_GetRenderDrawColor(renderer, &r, &g, &b, &a);
+    SDL_SetRenderDrawColor(renderer, 0, 0xFF, 0, SDL_ALPHA_OPAQUE);
 
-  Uint8 r, g, b, a;
-  SDL_GetRenderDrawColor(renderer, &r, &g, &b, &a);
-  SDL_SetRenderDrawColor(renderer, 0, 0xFF, 0, SDL_ALPHA_OPAQUE);
+    for (int pointIndex = 0; pointIndex < _impactPoints.size(); pointIndex++) {
+      Vector3 impactPoint = _impactPoints[pointIndex];
 
-  SDL_Rect ballRect = { (int)_ball.GetTransform().position.x, (int)(_ball.GetTransform().position.y - (_ball.GetTransform().position.z * 15)) };
-  //SDL_RenderDrawRect(renderer, &ballRect);
+      SDL_Rect impactLocation = { (int)impactPoint.x - (5), (int)impactPoint.y - (5), 10, 10 };
+      SDL_RenderDrawRect(renderer, &impactLocation);
+    }
 
-  SDL_SetRenderDrawColor(renderer, r, g, b, a);
+    SDL_SetRenderDrawColor(renderer, r, g, b, a);
+  }
 }
 
 void TennisScreen::CalculateDrawOrder(std::vector<GameObject *>& drawOrder)
@@ -263,4 +288,16 @@ void TennisScreen::CalculateDrawOrder(std::vector<GameObject *>& drawOrder)
       farthestEntry = objectsCopy.begin();
     }
   }
+}
+
+bool TennisScreen::IsRoundOver()
+{
+  bool multipleBounces = _bounces >= 2;
+  bool ballStopped = (fabsf(_ball.GetVelocity().x) <= BALL_STOPPED_EPSILON &&
+    fabsf(_ball.GetVelocity().y) <= BALL_STOPPED_EPSILON &&
+    fabsf(_ball.GetVelocity().z) <= BALL_STOPPED_EPSILON &&
+    _ball.IsOnGround() == true);
+  bool result = _roundState == ROUND_STATE_PLAY &&
+    (multipleBounces || _hitNet || ballStopped );
+  return result;
 }

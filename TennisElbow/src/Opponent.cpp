@@ -8,7 +8,7 @@
 
 Opponent::Opponent() : GameObject()
 {
-  _speed = 75.0f;
+  _speed = PLAYER_SPEED;
   Reset();
 }
 
@@ -64,7 +64,6 @@ void Opponent::Draw(SDL_Renderer *renderer, float dt)
 
 void Opponent::Reset()
 {
-  _lastBallVelocity = Vector3::Zero;
   _direction = Vector3::Zero;
   _intendedImpactPoint = { -1.0f, -1.0f, 0.0f };
 }
@@ -74,7 +73,7 @@ void Opponent::CalculateBallImpact(Ball *ball)
   Vector3 currentVelocity = ball->GetVelocity();
   Vector3 currentPosition = ball->GetTransform().position;
 
-  float airtime = fabsf((currentPosition.z + currentVelocity.z) / (Z_HEIGHT_CORRECTION + PHYSICS_GRAVITY));
+  float airtime = (fabsf((currentPosition.z + currentVelocity.z) / (Z_HEIGHT_CORRECTION + PHYSICS_GRAVITY)) / ACCURACY_CORRECTION);
 
   _intendedImpactPoint = {
     currentPosition.x + (currentVelocity.x * airtime),

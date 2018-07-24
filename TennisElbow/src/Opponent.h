@@ -26,5 +26,4 @@ protected:
   Vector3 _direction;
 
   Vector3 _intendedImpactPoint;
-  Vector3 _lastBallVelocity;
 };

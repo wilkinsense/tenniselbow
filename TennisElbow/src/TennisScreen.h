@@ -45,6 +45,8 @@ protected:
   void Reset();
   void CalculateDrawOrder(std::vector<GameObject *>& drawOrder);
 
+  bool IsRoundOver();
+
   Opponent _opponent;
   Player _player;
   Ball _ball;
@@ -59,11 +61,13 @@ protected:
   GameState _gameState;
 
   bool _hitNet;
+  int _bounces;
 
   Vector3 _hitPosition;
   Vector3 _hitVelocity;
 
   std::vector<GameObject *> _objects;
+  std::vector<Vector3> _impactPoints;
 
   SDL_GameController *_controller;
 };
