@@ -21,29 +21,49 @@ Vector4 Vector4::operator-(const Vector4& rhs) { return { x - rhs.x, y - rhs.y, 
 Vector4 Vector4::operator*(const float& rhs) { return { x * rhs, y * rhs, z * rhs, w * rhs }; }
 Vector4 Vector4::operator/(const float& rhs) { return { x / rhs, y / rhs, z / rhs, w / rhs }; }
 
+Vector2::Vector2() {}
+Vector2::Vector2(float x, float y)
+{
+    this->x = x;
+    this->y = y;
+}
+
+Vector3::Vector3() {}
+Vector3::Vector3(float x, float y, float z) : Vector2(x, y)
+{
+    this->z = z;
+}
+
+Vector4::Vector4() {}
+Vector4::Vector4(float x, float y, float z, float w) : Vector3(x, y, z)
+{
+    this->w = w;
+}
+
+
 float MathUtils::ToDegrees(float radians)
 {
-  float radiansToDegrees = 180.0f / MATH_PI;
-  return radians * radiansToDegrees;
+    float radiansToDegrees = 180.0f / MATH_PI;
+    return radians * radiansToDegrees;
 }
 
 float MathUtils::ToRadians(float degrees)
 {
-  float degreesToRadians = MATH_PI / 180.0f;
-  return degrees * degreesToRadians;
+    float degreesToRadians = MATH_PI / 180.0f;
+    return degrees * degreesToRadians;
 }
 
 float MathUtils::Magnitude(Vector2 vector)
 {
-  return sqrtf(powf(vector.x, 2.0f) + powf(vector.y, 2.0f));
+    return sqrtf(powf(vector.x, 2.0f) + powf(vector.y, 2.0f));
 }
 
 float MathUtils::Magnitude(Vector3 vector)
 {
-  return sqrtf(powf(vector.x, 2.0f) + powf(vector.y, 2.0f) + powf(vector.z, 2.0f));
+    return sqrtf(powf(vector.x, 2.0f) + powf(vector.y, 2.0f) + powf(vector.z, 2.0f));
 }
 
 float MathUtils::Magnitude(Vector4 vector)
 {
-  return sqrtf(powf(vector.x, 2.0f) + powf(vector.y, 2.0f) + powf(vector.z, 2.0f) + powf(vector.w, 2.0f));
+    return sqrtf(powf(vector.x, 2.0f) + powf(vector.y, 2.0f) + powf(vector.z, 2.0f) + powf(vector.w, 2.0f));
 }

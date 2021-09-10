@@ -6,24 +6,24 @@ class ScreenManager;
 class Screen
 {
 public:
-  friend class ScreenManager;
+    friend class ScreenManager;
 
-  Screen() { }
-  virtual ~Screen();
+    Screen() { }
+    virtual ~Screen();
 
-  void Initialize(SDL_Renderer *renderer);
-  virtual void Update(const SDL_Event &e, float dt) = 0;
-  virtual void Draw(SDL_Renderer *renderer, float dt) = 0;
+    void Initialize(SDL_Renderer* renderer);
+    virtual void Update(const SDL_Event& e, float dt) = 0;
+    virtual void Draw(SDL_Renderer* renderer, float dt) = 0;
 
-  virtual void OnEnter() { }
-  virtual void OnEnterTransitionDidFinish() { }
-  virtual void OnExit() { }
-  virtual void OnExitTransitionDidFinish() { }
+    virtual void OnEnter() { }
+    virtual void OnEnterTransitionDidFinish() { }
+    virtual void OnExit() { }
+    virtual void OnExitTransitionDidFinish() { }
 
-  virtual void Clear() { }
+    virtual void Clear() { }
 
 protected:
-  virtual void InitializeImpl(SDL_Renderer *renderer) = 0;
+    virtual void InitializeImpl(SDL_Renderer* renderer) = 0;
 
-  //SDL_Texture* _screenRenderTarget;
+    //SDL_Texture* _screenRenderTarget;
 };

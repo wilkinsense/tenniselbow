@@ -6,5 +6,5 @@ GameObject::~GameObject() { }
 
 Transform& GameObject::GetTransform()
 {
-  return _transform;
+    return _transform;
 }

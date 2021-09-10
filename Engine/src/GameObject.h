@@ -1,23 +1,24 @@
 #pragma once 
 
 #include "MathUtils.h"
+#include <SDL_events.h>
 
 struct SDL_Renderer;
 
 class GameObject
 {
 public:
-  virtual void Initialize(SDL_Renderer *renderer) = 0;
-  
-  virtual void Update(float dt) = 0;
-  virtual void Draw(SDL_Renderer *renderer, float dt) = 0;
+    ~GameObject();
 
-  Transform& GetTransform();
+    virtual void Initialize(SDL_Renderer* renderer) = 0;
 
-  ~GameObject();
+    virtual void Update(const SDL_Event& evt, float dt) = 0;
+    virtual void Draw(SDL_Renderer* renderer, float dt) = 0;
+
+    Transform& GetTransform();
 
 protected:
-  GameObject();
+    GameObject();
 
-  Transform _transform;
+    Transform _transform;
 };
