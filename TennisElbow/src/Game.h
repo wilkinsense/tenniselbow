@@ -6,20 +6,20 @@
 
 #define NEW_SYSTEM
 
-class Game: public GameEngine
+class Game : public GameEngine
 {
-  friend class GameEngine;
+    friend class GameEngine;
 
 public:
-  ~Game();
+    ~Game();
 
 protected:
-  Game();
+    Game();
 
-  void InitializeImpl();
-  void UpdateImpl(float dt);
-  void DrawImpl(SDL_Renderer *renderer, float dt);
+    void InitializeImpl();
+    void UpdateImpl(float dt);
+    void DrawImpl(SDL_Renderer* renderer, float dt);
 
-  SDL_GameController *_controller;
-  ScreenManager *_screenManager;
+    SDL_GameController* _controller;
+    ScreenManager* _screenManager;
 };

@@ -5,16 +5,16 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-  GameEngine *engine = GameEngine::CreateInstance();
-  engine->Initialize();
+    GameEngine* engine = GameEngine::CreateInstance();
+    engine->Initialize();
 
-  while(true)
-  {
-    engine->Update();
-    engine->Draw();
-  }
+    while (true)
+    {
+        engine->Update();
+        engine->Draw();
+    }
 
-  engine->Shutdown();
+    engine->Shutdown();
 
-  return 0;
+    return 0;
 }

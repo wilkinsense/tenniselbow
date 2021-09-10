@@ -8,148 +8,147 @@
 
 Ball::Ball() : GameObject()
 {
-  Reset();
+    Reset();
 
-  _mass = BALL_MASS;
-
+    _mass = BALL_MASS;
 }
 
 Ball::~Ball()
 {
-  SDL_DestroyTexture(_ballImage);
-  SDL_DestroyTexture(_shadowImage);
+    SDL_DestroyTexture(_ballImage);
+    SDL_DestroyTexture(_shadowImage);
 }
 
 void Ball::Initialize(SDL_Renderer *renderer)
 {
-  _ballImage = IMG_LoadTexture(renderer, "res/ball.png");
-  _shadowImage = IMG_LoadTexture(renderer, "res/shadow.png");
+    _ballImage = IMG_LoadTexture(renderer, "res/ball.png");
+    _shadowImage = IMG_LoadTexture(renderer, "res/shadow.png");
 
-  SDL_QueryTexture(_ballImage, nullptr, nullptr, &_width, &_height);
+    SDL_QueryTexture(_ballImage, nullptr, nullptr, &_width, &_height);
 }
 
 void Ball::Reset()
 {
-  _transform.position = { 0.0f, 0.0f, 0.0f };
+    _transform.position = {0.0f, 0.0f, 0.0f};
 
-  _velocity = { 0.0f, 0.0f, 0.0f };
-  _bouncing = false;
-  _onGround = false;
-  _active = false;
+    _velocity = {0.0f, 0.0f, 0.0f};
+    _bouncing = false;
+    _onGround = false;
+    _active = false;
 }
 
-void Ball::Update(float dt)
+void Ball::Update(const SDL_Event &evt, float dt)
 {
-  if (_bouncing == true)
-  {
-    _onGround = false;
-    _bouncing = false;
-  }
-
-  if (_onGround == false)
-  {
-    _velocity.z += (PHYSICS_GRAVITY * dt);
-    _transform.position.z += _velocity.z * dt;
-  }
-
-  _transform.position.x += _velocity.x * dt;
-  _transform.position.y += _velocity.y * dt;
-
-  if (_transform.position.z <= 0.0f)
-  {
-    // Now that we've made impact with the ground, half the velocity and send it back the way it came.
-    _velocity.z *= -0.5f;
-
-    // Make sure that the ball didn't go through the ground.
-    _transform.position.z = 0.0f;
-    _onGround = true;
-
-    // If we're still active, and we've got some velocity left, then we're bouncing.
-    if (_velocity.z != 0.0f && _active)
+    if (_bouncing == true)
     {
-      _bouncing = true;
-      _velocity.x *= BOUNCE_VELOCITY_DECAY;
-      _velocity.y *= BOUNCE_VELOCITY_DECAY;
+        _onGround = false;
+        _bouncing = false;
     }
-    else if (!_active)
-    {
-      _velocity.x = 0.0f;
-      _velocity.y = 0.0f;
-    }
-  }
 
-  if (_onGround)
-  {
-    if (_velocity.x != 0.0f)
+    if (_onGround == false)
     {
-      _velocity.x += -(_velocity.x / fabsf(_velocity.x)) * GROUND_FRICTION;
+        _velocity.z += (PHYSICS_GRAVITY * dt);
+        _transform.position.z += _velocity.z * dt;
     }
-    
-    if (_velocity.y != 0.0f)
+
+    _transform.position.x += _velocity.x * dt;
+    _transform.position.y += _velocity.y * dt;
+
+    if (_transform.position.z <= 0.0f)
     {
-      _velocity.y += -(_velocity.y / fabsf(_velocity.y)) * GROUND_FRICTION;
+        // Now that we've made impact with the ground, half the velocity and send it back the way it came.
+        _velocity.z *= -0.5f;
+
+        // Make sure that the ball didn't go through the ground.
+        _transform.position.z = 0.0f;
+        _onGround = true;
+
+        // If we're still active, and we've got some velocity left, then we're bouncing.
+        if (_velocity.z != 0.0f && _active)
+        {
+            _bouncing = true;
+            _velocity.x *= BOUNCE_VELOCITY_DECAY;
+            _velocity.y *= BOUNCE_VELOCITY_DECAY;
+        }
+        else if (!_active)
+        {
+            _velocity.x = 0.0f;
+            _velocity.y = 0.0f;
+        }
     }
-  }
+
+    if (_onGround)
+    {
+        if (_velocity.x != 0.0f)
+        {
+            _velocity.x += -(_velocity.x / fabsf(_velocity.x)) * GROUND_FRICTION;
+        }
+
+        if (_velocity.y != 0.0f)
+        {
+            _velocity.y += -(_velocity.y / fabsf(_velocity.y)) * GROUND_FRICTION;
+        }
+    }
 }
 
 void Ball::Draw(SDL_Renderer *renderer, float dt)
-{ 
-  SDL_Rect location;
-  GetShadowDrawRect(&location);
-  SDL_RenderCopy(renderer, _shadowImage, nullptr, &location);
+{
+    SDL_Rect location;
+    GetShadowDrawRect(&location);
+    SDL_RenderCopy(renderer, _shadowImage, nullptr, &location);
 
-  GetDrawRect(&location);
-  SDL_RenderCopy(renderer, _ballImage, nullptr, &location);
+    GetDrawRect(&location);
+    SDL_RenderCopy(renderer, _ballImage, nullptr, &location);
 }
 
 void Ball::ApplyForce(Vector3 force)
-{ 
-  _velocity.x += force.x;
-  _velocity.y += force.y;
-  _velocity.z += force.z;
+{
+    _velocity.x += force.x;
+    _velocity.y += force.y;
+    _velocity.z += force.z;
 
-  if (_velocity.z != 0.0f)
-  {
-    _onGround = false;
-  }
+    if (_velocity.z != 0.0f)
+    {
+        _onGround = false;
+    }
 }
 
 void Ball::GetShadowDrawRect(SDL_Rect *shadowDrawRect)
 {
-  (*shadowDrawRect) = { (int)_transform.position.x - (_width / 2), (int)_transform.position.y - (_height / 2), _width, _height };
+    (*shadowDrawRect) = {(int)_transform.position.x - (_width / 2), (int)_transform.position.y - (_height / 2), _width, _height};
 }
 
 void Ball::GetDrawRect(SDL_Rect *drawRect)
 {
-  (*drawRect) = { (int)_transform.position.x - (_width / 2), (int)_transform.position.y - (int)(_transform.position.z * Z_HEIGHT_CORRECTION) - (_height / 2), _width, _height };
+    (*drawRect) = {(int)_transform.position.x - (_width / 2), (int)_transform.position.y - (int)(_transform.position.z * Z_HEIGHT_CORRECTION) - (_height / 2), _width, _height};
 }
 
-const Vector3& Ball::GetVelocity()
+const Vector3 &Ball::GetVelocity()
 {
-  return _velocity;
+    return _velocity;
 }
 
 void Ball::SetActive(bool active)
 {
-  _active = active;
+    _active = active;
 }
 
 bool Ball::GetActive()
 {
-  return _active;
+    return _active;
 }
 
 bool Ball::IsOnGround()
 {
-  return _onGround;
+    return _onGround;
 }
 
 bool Ball::IsBouncing()
 {
-  return _bouncing;
+    return _bouncing;
 }
 
 void Ball::TEST_SetVelocity(Vector3 velocity)
 {
-  _velocity = velocity;
+    _velocity = velocity;
 }

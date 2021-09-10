@@ -4,6 +4,7 @@
 #define NET_HEIGHT_THRESHOLD 8.5f
 #define LET_ZONE_THRESHOLD 10.0f
 #define ACCURACY_CORRECTION 0.97f
+#define FIXED_TIMESTEP 0.33f
 
 // Physics
 #define BALL_MASS 0.146f
