@@ -265,35 +265,11 @@ void TennisScreen::CalculateDrawOrder(std::vector<GameObject*>& drawOrder)
     // SUPER HACK GARBAGE ALGO.
     drawOrder.clear();
 
-    auto objectsCopy = _objects;
-    auto farthestEntry = objectsCopy.begin();
+    drawOrder.insert(drawOrder.begin(), _objects.begin(), _objects.end());
 
-    while (objectsCopy.size() > 0)
-    {
-        bool entryFound = true;
-
-        for (auto itr = objectsCopy.begin(); itr != objectsCopy.end(); itr++)
-        {
-            if (farthestEntry != itr)
-            {
-                if ((*itr)->GetTransform().position.y < (*farthestEntry)->GetTransform().position.y)
-                {
-                    entryFound = false;
-                    farthestEntry = itr;
-                    break;
-                }
-            }
-        }
-
-        if (entryFound)
-        {
-            GameObject* farthest = *farthestEntry;
-
-            drawOrder.push_back(farthest);
-            objectsCopy.erase(farthestEntry);
-            farthestEntry = objectsCopy.begin();
-        }
-    }
+    std::sort(drawOrder.begin(), drawOrder.end(), [](GameObject* first, GameObject* second) -> bool {
+        return first->GetTransform().position.y > second->GetTransform().position.y;
+    });
 }
 
 bool TennisScreen::IsRoundOver()

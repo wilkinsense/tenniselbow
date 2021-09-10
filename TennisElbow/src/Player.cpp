@@ -4,6 +4,8 @@
 #include <iostream>
 #include "GameConstants.h"
 
+#define USE_CONTROLLER false
+
 Player::Player() : GameObject()
 {
     _speed = PLAYER_SPEED;
@@ -22,6 +24,7 @@ void Player::Initialize(SDL_Renderer* renderer)
 
 void Player::Update(const SDL_Event& evt, float dt)
 {
+#if USE_CONTROLLER
     float xvalue = (float)SDL_GameControllerGetAxis(_controller, SDL_CONTROLLER_AXIS_LEFTX) / (float)SHRT_MAX;
     float yvalue = (float)SDL_GameControllerGetAxis(_controller, SDL_CONTROLLER_AXIS_LEFTY) / (float)SHRT_MAX;
 
@@ -34,6 +37,11 @@ void Player::Update(const SDL_Event& evt, float dt)
     {
         yvalue = 0.0f;
     }
+#else
+    const Uint8* states = SDL_GetKeyboardState(NULL);
+    float xvalue = states[SDL_SCANCODE_A] ? -1.0f : states[SDL_SCANCODE_D] ? 1.0f : 0.0f;
+    float yvalue = states[SDL_SCANCODE_W] ? -1.0f : states[SDL_SCANCODE_S] ? 1.0f : 0.0f;
+#endif
 
     _transform.position.x += xvalue * _speed * dt;
     _transform.position.y += yvalue * _speed * dt;
