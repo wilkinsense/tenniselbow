@@ -12,62 +12,63 @@
 class TennisScreen : public Screen
 {
 public:
-  enum class RoundState
-  {
-    SERVING,
-    PLAY,
-    END,
-  };
+    enum class RoundState
+    {
+        SERVING,
+        PLAY,
+        END,
+    };
 
-  enum class GameState
-  {
-    PLAY,
-    PAUSED
-  };
+    enum class GameState
+    {
+        PLAY,
+        PAUSED
+    };
 
-  TennisScreen(SDL_GameController *controller);
-  ~TennisScreen();
+    TennisScreen(SDL_GameController* controller);
+    ~TennisScreen();
 
-  void Update(const SDL_Event &e, float dt);
-  void Draw(SDL_Renderer *renderer, float dt);
+    void Update(const SDL_Event& e, float dt);
+    void Draw(SDL_Renderer* renderer, float dt);
 
-  void OnEnter() { }
-  void OnEnterTransitionDidFinish() { }
-  void OnExit() { }
-  void OnExitTransitionDidFinish() { }
+    void OnEnter() { }
+    void OnEnterTransitionDidFinish() { }
+    void OnExit() { }
+    void OnExitTransitionDidFinish() { }
 
-  void Clear() { }
+    void Clear() { }
 
 protected:
-  void InitializeImpl(SDL_Renderer *renderer);
+    void InitializeImpl(SDL_Renderer* renderer);
 
-  void HandleInput(const SDL_Event *evt);
-  void Reset();
-  void CalculateDrawOrder(std::vector<GameObject *>& drawOrder);
+    void HandleInput(const SDL_Event* evt);
+    void Reset();
+    void CalculateDrawOrder(std::vector<GameObject*>& drawOrder);
 
-  bool IsRoundOver();
+    bool IsRoundOver();
 
-  Opponent _opponent;
-  Player _player;
-  Ball _ball;
-  Net _net;
+    Opponent _opponent;
+    Player _player;
+    Ball _ball;
+    Net _net;
 
-  SDL_Texture *_courtImage;
+    SDL_Texture* _courtImage;
 
-  // Using the default member-wise initializer for our new struct.
-  Vector2 _servingDirection;
+    // Using the default member-wise initializer for our new struct.
+    Vector2 _servingDirection;
 
-  RoundState _roundState;
-  GameState _gameState;
+    RoundState _roundState;
+    GameState _gameState;
 
-  bool _hitNet;
-  int _bounces;
+    bool _hitNet;
+    int _bounces;
 
-  Vector3 _hitPosition;
-  Vector3 _hitVelocity;
+    Vector3 _hitPosition;
+    Vector3 _hitVelocity;
 
-  std::vector<GameObject *> _objects;
-  std::vector<Vector3> _impactPoints;
+    std::vector<GameObject*> _objects;
+    std::vector<Vector3> _impactPoints;
 
-  SDL_GameController *_controller;
+    SDL_GameController* _controller;
+};
 };

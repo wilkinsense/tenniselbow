@@ -4,7 +4,6 @@
 #include <SDL_gamecontroller.h>
 
 struct SDL_Texture;
-//struct SDL_GameController;
 
 class Player : public GameObject
 {

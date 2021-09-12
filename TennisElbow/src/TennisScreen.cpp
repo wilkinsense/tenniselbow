@@ -269,7 +269,7 @@ void TennisScreen::CalculateDrawOrder(std::vector<GameObject*>& drawOrder)
 
     std::sort(drawOrder.begin(), drawOrder.end(), [](GameObject* first, GameObject* second) -> bool {
         return first->GetTransform().position.y > second->GetTransform().position.y;
-    });
+        });
 }
 
 bool TennisScreen::IsRoundOver()
