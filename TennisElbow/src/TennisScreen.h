@@ -12,17 +12,17 @@
 class TennisScreen : public Screen
 {
 public:
-  enum RoundState
+  enum class RoundState
   {
-    ROUND_STATE_SERVING,
-    ROUND_STATE_PLAY,
-    ROUND_STATE_END,
+    SERVING,
+    PLAY,
+    END,
   };
 
-  enum GameState
+  enum class GameState
   {
-    GAME_STATE_PLAY,
-    GAME_STATE_PAUSED
+    PLAY,
+    PAUSED
   };
 
   TennisScreen(SDL_GameController *controller);

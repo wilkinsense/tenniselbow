@@ -49,8 +49,8 @@ void TennisScreen::Reset()
     // Using the default member-wise initializer for our new struct.
     _servingDirection = { 0.0f, 0.0f };
 
-    _roundState = ROUND_STATE_SERVING;
-    _gameState = GAME_STATE_PLAY;
+    _roundState = RoundState::SERVING;
+    _gameState = GameState::PLAY;
 
     _hitNet = false;
     _bounces = 0;
@@ -76,7 +76,7 @@ void TennisScreen::Update(const SDL_Event& e, float dt)
         dt = FIXED_TIMESTEP;
     }
 
-    if (_gameState == GAME_STATE_PLAY)
+    if (_gameState == GameState::PLAY)
     {
         for (auto itr = _objects.begin(); itr != _objects.end(); itr++)
         {
@@ -88,7 +88,7 @@ void TennisScreen::Update(const SDL_Event& e, float dt)
             _impactPoints.push_back(_ball.GetTransform().position);
         }
 
-        if (_roundState == ROUND_STATE_PLAY)
+        if (_roundState == RoundState::PLAY)
         {
             if (_ball.IsBouncing())
             {
@@ -98,7 +98,7 @@ void TennisScreen::Update(const SDL_Event& e, float dt)
 
             if (IsRoundOver())
             {
-                _roundState = ROUND_STATE_END;
+                _roundState = RoundState::END;
                 _opponent.Reset();
             }
         }
@@ -110,7 +110,7 @@ void TennisScreen::HandleInput(const SDL_Event* evt)
     bool buttonReleased = evt->type == SDL_CONTROLLERBUTTONUP;
     Uint8 button = evt->cbutton.button;
 
-    if (_roundState == ROUND_STATE_SERVING)
+    if (_roundState == RoundState::SERVING)
     {
         _servingDirection = { (SERVING_DIRECTION_OFFSET_X - _player.GetTransform().position.x) * 2,
           (SERVING_DIRECTION_OFFSET_Y - _player.GetTransform().position.y) };
@@ -138,7 +138,7 @@ void TennisScreen::HandleInput(const SDL_Event* evt)
                 }
                 else
                 {
-                    _roundState = ROUND_STATE_PLAY;
+                    _roundState = RoundState::PLAY;
                     _ball.SetActive(true);
                     float velocityZ = -PHYSICS_GRAVITY * ((_ball.GetVelocity().z < 0.0f) ? 0.75f : 0.33f);
 
@@ -155,14 +155,14 @@ void TennisScreen::HandleInput(const SDL_Event* evt)
                 }
                 _ball.ApplyForce(difference);
 
-                if (_roundState == ROUND_STATE_PLAY)
+                if (_roundState == RoundState::PLAY)
                 {
                     _opponent.CalculateBallImpact(&_ball);
                 }
             }
         }
     }
-    else if (_roundState == ROUND_STATE_PLAY)
+    else if (_roundState == RoundState::PLAY)
     {
         SDL_Rect ballRect, shadowRect;
         _ball.GetDrawRect(&ballRect);
@@ -232,7 +232,7 @@ void TennisScreen::Draw(SDL_Renderer* renderer, float dt)
         (*itr)->Draw(renderer, dt);
     }
 
-    if (_roundState == ROUND_STATE_SERVING)
+    if (_roundState == RoundState::SERVING)
     {
         Uint8 r, g, b, a;
         SDL_GetRenderDrawColor(renderer, &r, &g, &b, &a);
@@ -279,7 +279,7 @@ bool TennisScreen::IsRoundOver()
         fabsf(_ball.GetVelocity().y) <= BALL_STOPPED_EPSILON &&
         fabsf(_ball.GetVelocity().z) <= BALL_STOPPED_EPSILON &&
         _ball.IsOnGround() == true);
-    bool result = _roundState == ROUND_STATE_PLAY &&
+    bool result = _roundState == RoundState::PLAY &&
         (multipleBounces || _hitNet || ballStopped);
     return result;
 }
